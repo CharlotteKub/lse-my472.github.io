@@ -25,24 +25,29 @@ Helpful functions are e.g. `str_view`, `str_view_all`, `str_extract`, `str_extra
 The view function allows to view keyword and/or regular expression matches in R similarly to in a text editor:
 
 ```{r}
-str_view(sample_text, "@")
+str_view(sample_text, "@") # using str_view() only highlights the expression matches but still shows all strings
+
 ```
 
 ```{r}
-str_view_all(sample_text, "@")
+str_view_all(sample_text, "@") # `str_view_all()` was deprecated in stringr 1.5.0.
+
 ```
 
 ```{r}
-str_view_all(sample_text, "a|e")
+str_view_all(sample_text, "a|e") # will highlight the letter a or e using | separator 
 ```
 
 The extract function on the other hand allows to extract the matching characters. The following regular expression is one possible way to use the options we discussed this week to extract the times from the file (as the backslash is already used as an escape symbol in normal strings in R, we need to use a double backslash for regular expressions):
 
 ```{r}
+
 # \d = a digit
 # \d{1,2} = 1-2 digits, e.g. "1", "11", "23"
 # [:.\\s-]? = optional set of characters (":","."," ","-")
 str_extract(sample_text, "\\d{1,2}[:.\\s-]?\\d{0,2}")
+
+str_extract_all(sample_text, "a|e")
 ```
 
 ```{r}
