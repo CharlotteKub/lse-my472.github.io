@@ -11,10 +11,72 @@ output: html_document
 1.1 The file uol.txt in the course repo for this week contains a list of 17 member institutions of the University of London. In your text editor or in R via `str_view_all()`, write down a regular expression which finds all postcodes. Note that in some of the postcodes there are white spaces between the two parts and in others not. The regular expression has to work with both.
 
 
+```{r}
+dir <- "~/Desktop/Political Science/LSE/LSE Courses/LSE MRes Political Science/lse-my472.github.io/week04/data/"
+
+uni_london <- read_file(paste0(dir,"uol.txt"))
+
+str_view(uni_london, "[A-Z]{1,2}\\d{1,2}[A-Z]{0,1}\\s?\\d{0,1}[A-Z]{1,2}")
+                        
+                        
+```
+
+
+
+__Greedy vs. Ungreedy Quantifiers__
+
+Greedy Quantifiers:
+
+*: Matches 0 or more times, as many as possible.
++: Matches 1 or more times, as many as possible.
+?: Matches 0 or 1 time, as many as possible.
+{n,m}: Matches between n and m times, as many as possible.
+
+Ungreedy (Lazy) Quantifiers:
+
+*?: Matches 0 or more times, as few as possible.
++?: Matches 1 or more times, as few as possible.
+??: Matches 0 or 1 time, as few as possible.
+{n,m}?: Matches between n and m times, as few as possible.
+
+
+```{r}
+# Greedy Quantifier 
+
+text <- "This is a <b>bold</b> statement."
+greedy_match <- str_extract(text, "<.*>")
+print(greedy_match)  # Output: "<b>bold</b> statement."
+```
+
+
+```{r}
+# Ungreedy Quantifier
+
+text <- "This is a <b>bold</b> statement."
+ungreedy_match <- str_extract(text, "<.*?>")
+print(ungreedy_match)  # Output: "<b>"
+
+```
+
 
 1.2 Next, try to mute/delete the second part of each postcode. Add a capturing group to your regular expression with which you can select only the first part, i.e. the first 2-4 characters of the postcodes. Then use find & replace in your text editor or `str_replace_all()` in R, and replace all postcodes with only the information stored in capturing group 1. This deletes the second part of each postcode.
 
 Hint: In R, the way to reference the group in the replace is `"\\1"` instead of `$1` in the text editor.
+
+__Capturing Group:__
+
+A capturing group is a part of a regular expression that allows you to isolate and extract a specific portion of the matched text. Capturing groups are created by placing the desired pattern inside parentheses ()
+
+
+`str_replace_all()`
+
+
+```{r}
+postcode <- str_replace_all(uni_london, "([A-Z]{1,2}\\d{1,2}[A-Z]{0,1})\\s?\\d{0,1}[A-Z]{1,2}", "\\1")
+postcode
+
+?str_replace_all()
+```
 
 
 ## Exercise 2
@@ -29,18 +91,77 @@ Let us assume for a moment that we only have three features/words in a dfm. Then
 ```{r}
 library("quanteda")
 library("quanteda.textstats")
+library("readtext")
+
+?readtext()
+
 ```
+
+
+`readtext()`
+
+
+__Transposition of Vector__
+
+A transposed vector is a vector that has been converted from a row vector to a column vector, or vice versa. In linear algebra, the transpose of a matrix is an operation that flips the matrix over its diagonal, switching the row and column indices of each element.
+
+__Tokenization__
+
+- Token =  a token is a single unit of text that is considered as a separate element for analysis.
+- Tokenization is the process of breaking down a text into these individual units, which can be words, phrases, symbols, or other meaningful elements.
+
+__Corpus__
+
+A corpus (plural: corpora) is a large and structured set of texts. It is used for statistical analysis, hypothesis testing, and linguistic research.
 
 ```{r}
 dfm <- data_char_ukimmig2010 %>%                        # 1. study the data
   corpus() %>% 
-  tokens(___________ = TRUE, ___________ = TRUE) %>%    # 2. remove punctuation and numbers
-  tokens_remove(___________) %>%                        # 3. remove stopwords (English)
-  ___________() %>%                                     # 4. stem the tokens
+  tokens(remove_punct = TRUE, remove_numbers = TRUE) %>%    # 2. remove punctuation and numbers
+  tokens_remove(stopwords("en")) %>%                        # 3. remove stopwords (English)
+  tokens_wordstem() %>%                                     # 4. stem the tokens
   dfm() %>%
-  dfm_trim(___________)                                 # 5. minimum word frequency = 2
+  dfm_trim(min_termfreq = 2)                                 # 5. minimum word frequency = 2
+
+
 dfm
+
+print(dfm)
+
+
 ```
+
+__Accessing the dfm__
+
+```{r}
+docnames(dfm)
+featnames(dfm)
+
+
+dfm[,1] # accessing features 
+dfm[, "immigration"]
+
+
+dfm[1,] # accessing documents 
+dfm["BNP",]
+
+
+
+```
+
+
+
+```{r}
+# test test str_sub()
+
+
+string_test <- "This is a veryveryVERY long sentence."
+
+str_sub(string_test, 1,7)
+
+str_sub(string_test, 1, 7) <- "this isn't"
+```
+
 
 
 2.2 Next, using the following function, compute similarities between the text from the Conservatives and the ones of the other parties. Sort the resulting similarities to see which extracts are most similar to the one from the Conservative party. Note that the findings also depend on the assumptions made during cleaning and deleting terms, so these methods of course cannot yield definite answers but only some indication which has to be analysed further. For example, the documents of the different parties have very different lengths, e.g. the Coalition party's extract contains only 4 sentences. Cosine similarity is more robust against such differences in document lengths than other approaches, however, very different document lengths still make it difficult to compare documents.
@@ -80,7 +201,7 @@ colnames(df_similarities) <- "similarity"
 
 # Sort similarities
 df_similarities %>%
-  ___________(desc(similarity))
+  arrange(desc(similarity))
 ```
 
 
