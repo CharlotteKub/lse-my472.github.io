@@ -1,12 +1,28 @@
 ---
 title: "MY472 - Week 4: Seminar exercises in text analysis"
-author: "Friedrich Geiecke"
-date: "AT 2023"
+author: "Ryan Hübert"
+date: "AT 2024"
 output: html_document
 ---
 
+**Attribution statement:** _The following teaching materials have been iteratively developed by current and former instructors, including: Friedrich Geiecke, Thomas Robinson and Ryan Hübert._
 
-## Exercise 1
+
+
+Suppose that you are doing a project analysing news articles from around the world in different languages. Your collaborator sends you a news article saved in a plain-text file. Unfortunately, he does not know how it is encoded, or even which languages it is in. Figure out the file's character encoding and its language (Google or ChatGPT can help you identify the language if you cannot recognize it yourself). Then write a new copy on your computer with UTF-8 encoding and using a file name that indicates it is UTF-8.
+
+```{r}
+library(tidyverse)
+my.file <- "data/news-article-1.txt"
+raw <- read_file(my.file, locale = locale(encoding="___________"))
+print(raw) # this is __________ [language]
+my.utf.file <- "___________"
+write_file(___________, ___________)
+```
+
+
+## Exercise 1: character encoding
+
 
 1.1 The file uol.txt in the course repo for this week contains a list of 17 member institutions of the University of London. In your text editor or in R via `str_view_all()`, write down a regular expression which finds all postcodes. Note that in some of the postcodes there are white spaces between the two parts and in others not. The regular expression has to work with both.
 
@@ -163,46 +179,6 @@ str_sub(string_test, 1, 7) <- "this isn't"
 ```
 
 
-
-2.2 Next, using the following function, compute similarities between the text from the Conservatives and the ones of the other parties. Sort the resulting similarities to see which extracts are most similar to the one from the Conservative party. Note that the findings also depend on the assumptions made during cleaning and deleting terms, so these methods of course cannot yield definite answers but only some indication which has to be analysed further. For example, the documents of the different parties have very different lengths, e.g. the Coalition party's extract contains only 4 sentences. Cosine similarity is more robust against such differences in document lengths than other approaches, however, very different document lengths still make it difficult to compare documents.
-
-```{r}
-cosine_similarities <- function(document_name, dfm) {
-  
-  #
-  # Compute similarities of one document to all other documents in dfm
-  #
-  # Inputs
-  # document_name: Character corresponding to the target document/row in the quanteda dfm
-  # dfm: Full quanteda dfm
-  #
-  # Output
-  # Similarity of document to all others in dfm
-  #
- 
-  dfm_row <- dfm[document_name,]
-  dfm_row <- dfm_row/sqrt(rowSums(dfm_row^2))
-  dfm <- dfm/sqrt(rowSums(dfm^2))
-  
-  similarities_output <- dfm%*%t(dfm_row)
-
-  return(similarities_output)
-  
-}
-```
-
-```{r}
-# Compute similarities
-similarities <- cosine_similarities("Conservative", dfm)
-
-# Store similarities in data frame
-df_similarities <- similarities %>% as.matrix() %>% as.data.frame()
-colnames(df_similarities) <- "similarity"
-
-# Sort similarities
-df_similarities %>%
-  arrange(desc(similarity))
-```
 
 
 ## References
