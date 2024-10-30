@@ -71,7 +71,8 @@ sum(is.na(unemp))
 # just using the min and max values of the variables (date + unemployment) to plot the tiles 
 
 lines_rectangle <- line_plot + 
-geom_rect(data = pres, aes(xmin = start, xmax = end, fill = party, ymin = 0, ymax = 0.12), alpha = 0.2) + scale_fill_manual(breaks = c("D", "R"), values = c("blue", "red")) + labs(fill = "Party")
+geom_rect(data = pres, aes(xmin = start, xmax = end, fill = party, ymin = 0, ymax = 0.12), alpha = 0.2) + scale_fill_manual(breaks = c("D", "R"), values = c("blue", "red")) + labs(fill = "Party")+
+  scale_x_date(limits=xrng, expand=c(0,0))  
 
 
 print(lines_rectangle)
@@ -88,11 +89,13 @@ xrng <- range(unemp$date, na.rm=TRUE)
 lines_rectangle2 <- line_plot + 
   geom_rect(data = pres, aes(xmin = start, xmax = end, fill = party, ymin=yrng[1]-0.05, ymax=yrng[2]+0.05), alpha = 0.2) +
   scale_fill_manual(breaks = c("D", "R"), values = c("blue", "red"), labels = c("Democrats", "Republican")) + # labs(fill = "Party")+
-    scale_x_date(limits=xrng, expand=c(0,0)) 
+    scale_x_date(limits=xrng, expand=c(0,0))  
 
 # scale_x_date() is used to customize the x-axis when it represents date data, 
 # using limits = xrng:  xrng is a numeric vector of length two to define the limits of the scale (first value = start of axis, second value = end of axis)
-# expand() = controls the expansion of the scale. The expand=c(0,0) argument removes any no additional space between the edges of the plot area and the data itself meaning the data will fit exactly within the limits specified without any extra space.
+# expand() = controls the expansion of the scale. The expand=c(0,0) argument removes any no additional space between the edges of the plot area and the data itself meaning the data will fit exactly within the limits specified without any extra space. 
+
+# the default for ggplot is to add some padding in the plot but by specifying 0,0 it means that the lower and upper end of the x axis end directly with the values specified = resulting in 0 padding 
 
 
 print(lines_rectangle2)
