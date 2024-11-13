@@ -81,6 +81,6 @@ Lastly, when inspecting an element and copying the CSS selector in your browser,
 Scraping with this CSS selector yields the correct element from our website:
 
 ```{r}
-relevant_elements <- html_elements(html, css = "__________") # fill this in during lecture
+relevant_elements <- html_elements(html, css = "body > div.division-two > p:nth-child(2)") # fill this in during lecture
 html_text(relevant_elements[[1]])
 ```
