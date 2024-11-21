@@ -214,6 +214,31 @@ helper_function("Doctoral advisor", labels_feynman, data_feynman)
 Putting all these pieces together allows to collect the information for each physics laureate by navigating to their individual page:
 
 ```{r}
+
+  # Obtain relevant link element for the current laureate's name
+  current_laureate_element <- all_link_elements[all_link_texts ==  "Wilhelm Röntgen"][1]
+  
+  ## Navigate to URL of current laureate
+  # Get target of hyperlink
+  current_partial_url <- current_laureate_element %>% html_attr("href")
+  current_url <- paste("https://en.wikipedia.org",  current_partial_url, sep = "")
+  # Load page
+  current_html <- read_html(current_url)
+  
+  # Get labels and data
+  labels <- current_html %>% html_elements(css = ".infobox-label") %>% html_text()
+  data <- current_html %>% html_elements(css = ".infobox-data") %>% html_text()
+  
+  # Clean text and store in data frame
+  physicists[physicists$name == current_name, "fields"] <- helper_function("Field", labels, data)
+  physicists[physicists$name == current_name, "institutions"] <- helper_function("Institution", labels, data)
+  physicists[physicists$name == current_name, "doctoral_advisors"] <- helper_function("Doctoral advisor", labels, data)
+  physicists[physicists$name == current_name, "doctoral_students"] <- helper_function("Doctoral students", labels, data)
+  
+```
+
+
+```{r}
 # Loop over all names of physics laureates
 for (current_name in physicists_names) {
   
