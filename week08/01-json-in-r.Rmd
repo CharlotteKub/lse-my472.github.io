@@ -11,7 +11,11 @@ We are going to work with JSON files that come either from our local machine (we
 ```{r}
 library("jsonlite")
 library("tidyverse")
+
+
+?fromJSON()
 ```
+
 
 In the `data` folder in for this week's lecture materials, there are three simple JSON files. Let's use R's tools to work with each of them.
 
@@ -23,6 +27,8 @@ We begin by reading and parsing the first file in R.
 example_1_parsed <- fromJSON("data/example_1.json") # load the json file
 class(example_1_parsed) # this is a list, whose elements you can access with `$`
 names(example_1_parsed) # what are the names of the elements of the list?
+
+
 ```
 
 The key-value structure is of JSON objects is transformed into (nested) lists in R:
